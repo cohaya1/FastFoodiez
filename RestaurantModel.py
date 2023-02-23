@@ -1,14 +1,16 @@
-from typing import Optional
-from pydantic import BaseModel
-class Restaurant(BaseModel):
-    id: int
-    Restaurantname: str
-    Restaurantlocation: str
-    Restaurantrating: int
-    Restaurantdescription: str
-    restaurantstype_id: str
-    Restaurantphone: Optional[str] = None
-    DeepLinkURL: str
-    Restaurantlatitude: int
-    Restaurantlongitude: int 
+
+from mongoengine import Document ,IntField, StringField, FloatField
+class Restaurants(Document):
+    Restaurantname = StringField(required=True)
+    Restaurantlocation = StringField(required=True)
+    Restaurantrating = FloatField(required=True)
+    Restaurantdescription = StringField(required=True)
+    restaurantstype_id = StringField(required=True)
+    DeepLinkURL = StringField(required=True)
+    Restaurantlatitude = FloatField(required=True)
+    Restaurantlongitude = FloatField(required=True)
+    Restaurantphone = StringField(required=False)
+
+
+
 

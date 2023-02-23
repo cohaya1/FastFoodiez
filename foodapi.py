@@ -1,37 +1,36 @@
 import json
-from fastapi import FastAPI, Path, Query, HTTPException, status
-from typing import Optional
-from MongoDBclient import restaurant_collection
+import logging
+from fastapi import FastAPI, HTTPException
+from pymongo import MongoClient
+from bson import json_util
+from typing import List
+
+
 app = FastAPI()
 
-restaruants = {
- [restaurant_collection]
 
+class RestaurantModel:
+    db_name = "Foodiez"
+    collection_name = "Restaurants"
 
+    @staticmethod
+    def get_all_restaurants() -> List[dict]:
+        client = MongoClient("mongodb://localhost:27017/?directConnection=true")
+        db = client[RestaurantModel.db_name]
+        collection = db[RestaurantModel.collection_name]
+        restaurants = list(collection.find({}))
+        client.close() # close the connection to the MongoDB server after fetching the data
+        return restaurants
 
-
-}
-
-
-@app.get("/getRestaurant/{restaurant_id}")
-def get_Restaurants(restaurant_id: int = Path(..., title="The ID of the restaurant you want to view", ge=1, le=1)):
-    return restaruants[restaurant_id]
 
 @app.get("/getRestaurants")
-def get_Restaurants():
-    restaurants = list(restaruants.find({}))
-    return restaurants
-
-
-
-@app.get("/get-by-menu")
-def get_by_menu(menu: Optional[str] = Query(..., title="The menu item you want to search for", min_length=3)):
-    return {item_id: restaruants[item_id] for item_id in restaruants if restaruants[item_id]["menu"] == menu}
-
-
-@app.get("/get-by-city/{item_id}")
-def get_by_city(*, item_id: int, city: Optional[str] = Query(..., title="The city you want to search for", min_length=3)):
+def get_restaurants() -> List[dict]:
     try:
-        return {item_id: restaruants[item_id] for item_id in restaruants if restaruants[item_id]["city"] == city}
-    except:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+        restaurants = RestaurantModel.get_all_restaurants()
+        if not restaurants:
+            raise HTTPException(status_code=204, detail="No restaurants found.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+    # Convert the response to a JSON-serializable format
+    return json.loads(json_util.dumps(restaurants))
