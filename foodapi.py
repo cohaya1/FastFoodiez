@@ -29,7 +29,8 @@ class RestaurantModel:
         db = client[RestaurantModel.db_name]
         collection = db[RestaurantModel.collection_name]
         cursor = collection.find({})
-        restaurants = [restaurant async for restaurant in cursor]
+        restaurants = list(await cursor.to_list(length=None))
+
         client.close() # close the connection to the MongoDB server after fetching the data
         return restaurants
 
