@@ -7,6 +7,7 @@ from typing import List
 import uvicorn 
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+import motor.motor_asyncio as motor 
 
 app = FastAPI()
 
