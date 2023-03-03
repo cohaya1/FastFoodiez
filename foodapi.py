@@ -6,7 +6,7 @@ from bson import json_util
 from typing import List
 import uvicorn 
 from fastapi.middleware.cors import CORSMiddleware
-
+from motor.motor_asyncio import AsyncIOMotorClient
 
 app = FastAPI()
 
@@ -25,10 +25,11 @@ class RestaurantModel:
 
     @staticmethod
     async def get_all_restaurants() -> List[dict]:
-        client = MongoClient("mongodb://localhost:27017/?directConnection=true")
+        client = AsyncIOMotorClient("mongodb://localhost:27017/?directConnection=true")
         db = client[RestaurantModel.db_name]
         collection = db[RestaurantModel.collection_name]
-        restaurants = await collection.find({}).to_list(length=None)
+        cursor = collection.find({})
+        restaurants = [restaurant async for restaurant in cursor]
         client.close() # close the connection to the MongoDB server after fetching the data
         return restaurants
 
