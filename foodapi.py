@@ -24,19 +24,19 @@ class RestaurantModel:
     collection_name = "Restaurants"
 
     @staticmethod
-    def get_all_restaurants() -> List[dict]:
+    async def get_all_restaurants() -> List[dict]:
         client = MongoClient("mongodb://localhost:27017/?directConnection=true")
         db = client[RestaurantModel.db_name]
         collection = db[RestaurantModel.collection_name]
-        restaurants = list(collection.find({}))
+        restaurants = await collection.find({}).to_list(length=None)
         client.close() # close the connection to the MongoDB server after fetching the data
         return restaurants
 
 
 @app.get("/getRestaurants")
-def get_restaurants() -> List[dict]:
+async def get_restaurants() -> List[dict]:
     try:
-        restaurants = RestaurantModel.get_all_restaurants()
+        restaurants = await RestaurantModel.get_all_restaurants()
         if not restaurants:
             raise HTTPException(status_code=204, detail="No restaurants found.")
     except Exception as e:
@@ -50,7 +50,7 @@ def get_restaurants() -> List[dict]:
         "data": response,
         "Access-Control-Allow-Origin": "*", # Update with your app's domain or '*' to allow all domains
     }
-    
+
 
 
 
