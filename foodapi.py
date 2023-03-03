@@ -4,10 +4,19 @@ from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 from bson import json_util
 from typing import List
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
 
+# Add CORS middleware to allow requests from other domains
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Update with your app's domain or '*' to allow all domains
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class RestaurantModel:
     db_name = "Foodiez"
@@ -33,4 +42,15 @@ def get_restaurants() -> List[dict]:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
     # Convert the response to a JSON-serializable format
-    return json.loads(json_util.dumps(restaurants))
+    # Convert the response to a JSON-serializable format and add CORS headers
+    response = json.loads(json_util.dumps(restaurants))
+    return {
+        "status": "success",
+        "data": response,
+        "Access-Control-Allow-Origin": "*", # Update with your app's domain or '*' to allow all domains
+    }
+    
+
+
+
+

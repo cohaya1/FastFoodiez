@@ -6,10 +6,12 @@ class Restaurants(Document):
     Restaurantrating = FloatField(required=True)
     Restaurantdescription = StringField(required=True)
     restaurantstype_id = StringField(required=True)
-    DeepLinkURL = StringField(required=True)
+    DeepLinkURL = StringField(required=False)
     Restaurantlatitude = FloatField(required=True)
     Restaurantlongitude = FloatField(required=True)
     Restaurantphone = StringField(required=False)
+    Restaurantwebsite = StringField(required=False)
+    RestaurantImage = StringField(required=True)
 
 
 
