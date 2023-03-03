@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 from bson import json_util
 from typing import List
+import unicorn as unicorn
 from fastapi.middleware.cors import CORSMiddleware
 
 
