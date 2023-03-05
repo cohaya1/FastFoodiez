@@ -8,6 +8,7 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import motor.motor_asyncio as motor 
+import os 
 
 app = FastAPI()
 
@@ -26,7 +27,8 @@ class RestaurantModel:
 
     @staticmethod
     async def get_all_restaurants() -> List[dict]:
-        client = AsyncIOMotorClient("mongodb://localhost:27017/?directConnection=true")
+        mongo_uri = os.environ.get("mongodb://localhost:27017/?directConnection=true")
+        client = AsyncIOMotorClient(mongo_uri)
         db = client[RestaurantModel.db_name]
         collection = db[RestaurantModel.collection_name]
         cursor = collection.find({})

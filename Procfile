@@ -1,1 +1,1 @@
-web: gunicorn -w 8 -k uvicorn.workers.UvicornWorker --timeout 120 foodapi:app
+web: uvicorn foodapi:app --host=0.0.0.0 --port=$PORT --workers=4
