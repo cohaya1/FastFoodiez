@@ -27,7 +27,7 @@ class RestaurantModel:
 
     @staticmethod
     async def get_all_restaurants() -> List[dict]:
-        mongo_uri = os.environ.get("mongodb://localhost:27017/?directConnection=true")
+        mongo_uri = os.environ.get("mongodb://localhost:27017/")
         client = AsyncIOMotorClient(mongo_uri)
         db = client[RestaurantModel.db_name]
         collection = db[RestaurantModel.collection_name]
